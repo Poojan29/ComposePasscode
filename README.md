@@ -3,6 +3,10 @@
 The Passcode Android Jetpack Library is tool designed to simplify the implementation of passcode functionality in Android applications. It is built on top of the Android Jetpack components, which provide a set of libraries and guidelines to develop robust and efficient Android apps.
 
 [![](https://jitpack.io/v/Poojan29/ComposePasscode.svg)](https://jitpack.io/#Poojan29/ComposePasscode)
+<p>
+<img src="https://github.com/Poojan29/ComposePasscode/blob/master/image/passcode.png" width="200" height="400">
+<img src="https://github.com/Poojan29/ComposePasscode/blob/master/image/drag_passcode.png" width="200" height="400">
+</p>
 
 ## Features
 
@@ -78,3 +82,6 @@ override fun onPassCodeReceive(passcode: String) {
 ## Do you like the project?
 
 `Do support us by giving a ⭐ to the repository! :-)`
+
+## License
+[MIT License](LICENSE)
