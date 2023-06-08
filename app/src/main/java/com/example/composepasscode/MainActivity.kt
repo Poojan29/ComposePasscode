@@ -1,8 +1,6 @@
 package com.example.composepasscode
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.composepasscode.ui.theme.ComposePasscodeTheme
 import com.poojan29.passcode.passcode.ui.component.DraggablePasscode
-import com.poojan29.passcode.passcode.ui.component.PasscodeScreen
 import com.poojan29.passcode.passcode.util.PasscodeListener
 import com.poojan29.passcode.passcode.util.PasscodeManager
 import com.poojan29.passcode.passcode.viewmodel.PasscodeViewModel
@@ -43,16 +40,12 @@ class MainActivity : ComponentActivity(), PasscodeListener {
 
     override fun onPasscodeReject() {
         // Show toast message
-        Log.d("TAG", "onPasscodeReject: Rejected")
     }
 
     override fun onPassCodeReceive(passcode: String) {
-        Log.d("TAG", "onPassCodeReceive: $passcode")
         if (passcodeManager.getSavedDragPasscode() == passcode) {
-            Toast.makeText(this, "Same", Toast.LENGTH_SHORT).show()
             // Navigate to new screen
         } else {
-            Toast.makeText(this, "Different", Toast.LENGTH_SHORT).show()
             passcodeManager.isPasscodeWrong = true
         }
     }
