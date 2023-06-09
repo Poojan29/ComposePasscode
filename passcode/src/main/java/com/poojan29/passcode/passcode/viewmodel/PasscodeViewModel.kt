@@ -16,6 +16,7 @@ class PasscodeViewModel(
 ) : ViewModel() {
 
     private var _isPasscodeAlreadySet = mutableStateOf(passcodeManager.hasPasscode)
+    private val _isDragPasscodeAlreadySet = mutableStateOf(passcodeManager.hasDragPasscode)
 
     private val _onPassCodeConfirm = MutableSharedFlow<String>()
     private val _onPassCodeReject = MutableSharedFlow<Unit>()
@@ -34,9 +35,17 @@ class PasscodeViewModel(
     val activeStep = _activeStep.asStateFlow()
     val filledDots = _currentDot.asStateFlow()
 
-    var isPasscodeAlreadySet = _isPasscodeAlreadySet.value
+    var isPasscodeAlreadySet: Boolean
+        get() = _isPasscodeAlreadySet.value
+        set(value) {
+            _isPasscodeAlreadySet.value = value
+        }
 
-    private val _isDragPasscodeAlreadySet = mutableStateOf(passcodeManager.hasDragPasscode)
+    var isDragPasscodeAlreadySet: Boolean
+        get() = _isDragPasscodeAlreadySet.value
+        set(value) {
+            _isDragPasscodeAlreadySet.value = value
+        }
 
     private val _onDragPassCodeConfirm = MutableSharedFlow<String>()
     private val _onDragPassCodeReject = MutableSharedFlow<Unit>()
@@ -54,8 +63,6 @@ class PasscodeViewModel(
 
     val activeDragStep = _activeDragStep.asStateFlow()
     val filledDragDots = _currentDragDot.asStateFlow()
-
-    var isDragPasscodeAlreadySet = _isDragPasscodeAlreadySet.value
 
     private fun emitActiveStep(activeStep: Step) = viewModelScope.launch {
         _activeStep.emit(activeStep)

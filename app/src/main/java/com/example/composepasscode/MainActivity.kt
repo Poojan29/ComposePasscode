@@ -39,14 +39,21 @@ class MainActivity : ComponentActivity(), PasscodeListener {
     }
 
     override fun onPasscodeReject() {
-        // Show toast message
+        // Show passcode reject message
+    }
+
+    override fun onPasscodeForgot() {
+        passcodeManager.clearPasscode()
+        passcodeViewModel.isPasscodeAlreadySet = false
+        // Implement your own flow
+        // i.e send new passcode by email or message and verify it from user with email or message.
     }
 
     override fun onPassCodeReceive(passcode: String) {
         if (passcodeManager.getSavedDragPasscode() == passcode) {
             // Navigate to new screen
         } else {
-            passcodeManager.isPasscodeWrong = true
+            passcodeManager.isPasscodeWrong.value = true
         }
     }
 }

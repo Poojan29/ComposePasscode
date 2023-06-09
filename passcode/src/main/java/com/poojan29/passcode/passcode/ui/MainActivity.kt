@@ -40,8 +40,17 @@ class MainActivity : ComponentActivity(), PasscodeListener {
         // Show passcode reject message
     }
 
+    override fun onPasscodeForgot() {
+        // clear store passcode by calling `clearPasscode()` method
+        // Implement your own flow
+        // i.e send new passcode by email or message and verify it from user with email or message.
+    }
+
     override fun onPassCodeReceive(passcode: String) {
-        // check passcode is correct or not
-        // if is it correct then navigate to new screen
+        if (passcodeManager.getSavedDragPasscode() == passcode) {
+            // Navigate to new screen
+        } else {
+            passcodeManager.isPasscodeWrong.value = true
+        }
     }
 }

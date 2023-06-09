@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -59,7 +61,7 @@ fun PasscodeScreen(
 
     val activeStep by viewModel.activeStep.collectAsState()
     val scrollState = rememberScrollState()
-    viewModel.isPasscodeAlreadySet = passcodeManager.hasDragPasscode
+    viewModel.isPasscodeAlreadySet = passcodeManager.hasPasscode
 
     LaunchedEffect(key1 = true) {
         viewModel.onPassCodeReceive.collect {
@@ -71,7 +73,8 @@ fun PasscodeScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Header(
             activeStep = activeStep,
@@ -79,7 +82,6 @@ fun PasscodeScreen(
         )
         if (!passcodeManager.hasPasscode) {
             StepIndicator(
-                modifier = Modifier.fillMaxWidth(),
                 activeStep = activeStep,
             )
         }
@@ -87,7 +89,6 @@ fun PasscodeScreen(
             modifier = Modifier.height(30.dp)
         )
         DotIndicator(
-            modifier = Modifier.fillMaxWidth(),
             viewModel = viewModel,
             passcodeListener = passcodeListener
         )
@@ -95,21 +96,16 @@ fun PasscodeScreen(
             modifier = Modifier.height(100.dp)
         )
         PassCodeKeyView(
-            modifier = Modifier.padding(0.dp, 50.dp),
             viewModel = viewModel
         )
-        if (passcodeManager.isPasscodeWrong) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 20.dp),
-                text = "Forgot Passcode",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                textAlign = TextAlign.Center
-            )
+        if (passcodeManager.isPasscodeWrong.value) {
+            FilledTonalButton(
+                onClick = {
+                    passcodeListener.onPasscodeForgot()
+                },
+            ) {
+                Text(text = stringResource(id = R.string.forgot_passcode))
+            }
         }
     }
 }
@@ -121,15 +117,14 @@ fun Header(
 ) {
     Text(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(0.dp, 40.dp, 0.dp, 0.dp),
         text = if (isPasscodeAlreadySet) {
-            "Enter your Passcode"
+            stringResource(id = R.string.enter_your_passcode)
         } else {
             if (activeStep == PasscodeViewModel.Step.CREATE) {
-                "Create Passcode"
+                stringResource(id = R.string.create_passcode)
             } else {
-                "Confirm Passcode"
+                stringResource(id = R.string.confirm_passcode)
             }
         },
         style = TextStyle(
@@ -142,11 +137,9 @@ fun Header(
 
 @Composable
 fun StepIndicator(
-    modifier: Modifier,
     activeStep: PasscodeViewModel.Step,
 ) {
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(
             space = 10.dp,
             alignment = Alignment.CenterHorizontally
@@ -177,7 +170,6 @@ fun StepIndicator(
 
 @Composable
 fun DotIndicator(
-    modifier: Modifier,
     viewModel: PasscodeViewModel,
     passcodeListener: PasscodeListener,
 ) {
@@ -194,7 +186,6 @@ fun DotIndicator(
     }
 
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(
             space = 20.dp,
             alignment = Alignment.CenterHorizontally
@@ -209,8 +200,8 @@ fun DotIndicator(
             Box(
                 modifier = Modifier
                     .size(
-                        width = 15.dp,
-                        height = 15.dp
+                        width = 20.dp,
+                        height = 20.dp
                     )
                     .background(
                         color = dotColor,
@@ -224,14 +215,13 @@ fun DotIndicator(
 
 @Composable
 fun PassCodeKeyView(
-    modifier: Modifier,
     viewModel: PasscodeViewModel
 ) {
     val onEnterKeyClick = { keyTitle: String ->
         viewModel.enterKey(keyTitle)
     }
 
-    Box(modifier = modifier) {
+    Box {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -321,7 +311,7 @@ fun PassCodeKeyView(
                 PassCodeKey(
                     modifier = Modifier.weight(weight = 1.0F),
                     keyIcon = ImageVector.vectorResource(id = R.drawable.ic_delete),
-                    keyIconContentDescription = "Delete Passcode Key Button",
+                    keyIconContentDescription = stringResource(id = R.string.delete_passcode),
                     onClick = {
                         viewModel.deleteAllKey()
                     }
@@ -334,7 +324,7 @@ fun PassCodeKeyView(
                 PassCodeKey(
                     modifier = Modifier.weight(weight = 1.0F),
                     keyIcon = ImageVector.vectorResource(id = R.drawable.ic_clear),
-                    keyIconContentDescription = "Delete Passcode Key Button",
+                    keyIconContentDescription = stringResource(id = R.string.delete_passcode),
                     onClick = {
                         viewModel.deleteKey()
                     }
@@ -408,6 +398,10 @@ class MyInterfacePreviewProvider : PreviewParameterProvider<PasscodeListener> {
             }
 
             override fun onPassCodeReceive(passcode: String) {
+
+            }
+
+            override fun onPasscodeForgot() {
 
             }
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +32,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -83,7 +85,8 @@ fun DraggablePasscode(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DragHeader(
             activeDragStep = activeDragStep,
@@ -94,7 +97,6 @@ fun DraggablePasscode(
         )
         if (!passcodeManager.hasDragPasscode) {
             DragStepIndicator(
-                modifier = Modifier.fillMaxWidth(),
                 activeDragStep = activeDragStep
             )
         }
@@ -102,7 +104,6 @@ fun DraggablePasscode(
             modifier = Modifier.height(30.dp)
         )
         DragDotIndicator(
-            modifier = Modifier.fillMaxWidth(),
             dragViewModel = dragViewModel,
             dragObserver = dragObserver,
         )
@@ -112,7 +113,6 @@ fun DraggablePasscode(
         DragBox(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = {
@@ -133,6 +133,15 @@ fun DraggablePasscode(
                     }
                 }
         )
+        if (passcodeManager.isPasscodeWrong.value) {
+            FilledTonalButton(
+                onClick = {
+                    passcodeListener.onPasscodeForgot()
+                },
+            ) {
+                Text(text = stringResource(id = R.string.forgot_passcode))
+            }
+        }
     }
 }
 
@@ -169,7 +178,7 @@ fun DragBox(
             modifier = Modifier
                 .align(alignment = Alignment.Center)
                 .padding(25.dp),
-            text = "Drag your finger here only in one direction.",
+            text = stringResource(id = R.string.drag_guide),
             style = TextStyle(
                 fontSize = 18.sp
             ),
@@ -189,12 +198,12 @@ fun DragHeader(
             .padding(0.dp, 40.dp, 0.dp, 0.dp),
         text =
         if (isDragPasscodeAlreadySet) {
-            "Drag your Passcode"
+            stringResource(id = R.string.drag_your_pattern)
         } else {
             if (activeDragStep == PasscodeViewModel.DragStep.CREATE) {
-                "Create Passcode"
+                stringResource(id = R.string.create_passcode)
             } else {
-                "Confirm Passcode"
+                stringResource(id = R.string.confirm_passcode)
             }
         },
         style = TextStyle(
@@ -207,11 +216,9 @@ fun DragHeader(
 
 @Composable
 fun DragStepIndicator(
-    modifier: Modifier,
     activeDragStep: PasscodeViewModel.DragStep,
 ) {
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(
             space = 10.dp,
             alignment = Alignment.CenterHorizontally
@@ -242,14 +249,12 @@ fun DragStepIndicator(
 
 @Composable
 fun DragDotIndicator(
-    modifier: Modifier,
     dragViewModel: PasscodeViewModel,
     dragObserver: DragObserver,
 ) {
     val filledDots by dragViewModel.filledDragDots.collectAsState()
 
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(
             space = 20.dp,
             alignment = Alignment.CenterHorizontally
